@@ -1,0 +1,25 @@
+{
+  "name": "puppet-unattended_reboot",
+  "version": "0.1.0",
+  "author": "Government Digital Service",
+  "summary": "Coordinates unattended reboots of Ubuntu servers",
+  "license": "MIT",
+  "source": "https://github.com/alphagov/puppet-unattended_reboot",
+  "project_page": "https://github.com/alphagov/puppet-unattended_reboot",
+  "issues_url": "https://github.com/alphagov/puppet-unattended_reboot/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
+    }
+  ]
+}
