@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -u
+
+# Redirect stdout and stderr to syslog
+exec 1> >(logger -s -t $(basename $0)) 2>&1
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
+
+if ! [ -f /var/run/reboot-required ]; then
+   # No reboot required; no need to log anything
+   exit 0
+fi
+
+<% unless @check_scripts_directory == '' -%>
+/bin/run-parts --exit-on-error <%= @check_scripts_directory %>
+
+if [ $? -ne 0 ]; then
+  echo 'One of the check scripts returned a non-zero exit code' >&2
+  exit 1
+fi
+
+<% end -%>
+/usr/bin/locksmithctl -endpoint='<%= @etcd_endpoints.join(',') %>' lock '<%= @fqdn %>'
+
+if [ $? -ne 0 ]; then
+  echo "Couldn't obtain lock for <%= @fqdn %>" >&2
+  exit 1
+fi
+
+<% unless @pre_reboot_scripts_directory == '' -%>
+/bin/run-parts --exit-on-error <%= @pre_reboot_scripts_directory %>
+
+if [ $? -ne 0 ]; then
+  echo 'One of the pre-reboot scripts returned a non-zero exit code' >&2
+
+  # Try to release lock
+  /usr/bin/locksmithctl -endpoint='<%= @etcd_endpoints.join(',') %>' unlock '<%= @fqdn %>'
+  if [ $? -ne 0 ]; then
+    echo 'Unable to release reboot lock' >&2
+  fi
+
+  exit 1
+fi
+
+<% end -%>
+/sbin/reboot
+
+if [ $? -ne 0 ]; then
+  echo 'reboot command returned non-zero exit code' >&2
+  exit 1
+fi
