@@ -162,15 +162,16 @@ class unattended_reboot (
   # Run unattended upgrade to maximise the chance that an upgraded package is
   # installed within the reboot window
   cron { 'unattended-upgrade':
-    ensure   => $unattended_upgrade_cron_ensure,
-    month    => $cron_month,
-    monthday => $cron_monthday,
-    weekday  => $cron_weekday,
-    hour     => $cron_hour,
-    minute   => fqdn_rand(59),
-    user     => 'root',
-    command  => '/usr/bin/unattended-upgrade',
-    require  => Package['unattended-upgrades'],
+    ensure      => $unattended_upgrade_cron_ensure,
+    month       => $cron_month,
+    monthday    => $cron_monthday,
+    weekday     => $cron_weekday,
+    hour        => $cron_hour,
+    minute      => fqdn_rand(59),
+    user        => 'root',
+    environment => $cron_env_vars,
+    command     => '/usr/bin/unattended-upgrade',
+    require     => Package['unattended-upgrades'],
   }
 
 }
