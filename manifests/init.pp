@@ -11,6 +11,10 @@
 #
 #   Default: ''
 #
+# [*cron_env_vars*]
+#   An array of environment variables to apply to the created cronjobs.
+#   Default: []
+#
 # [*cron_month*]
 #   Month of year at which to run unatteded-reboot command.
 #   Default: '*'
@@ -68,6 +72,7 @@
 #
 class unattended_reboot (
   $check_scripts_directory = '',
+  $cron_env_vars = [],
   $cron_month = '*',
   $cron_monthday = '*',
   $cron_weekday = '*',
@@ -87,6 +92,7 @@ class unattended_reboot (
     validate_absolute_path($pre_reboot_scripts_directory)
   }
 
+  validate_array($cron_env_vars)
   validate_array($etcd_endpoints)
   validate_bool($enabled)
   validate_bool($manage_package)
@@ -140,7 +146,7 @@ class unattended_reboot (
     hour        => $cron_hour,
     minute      => $cron_minute,
     user        => 'root',
-    environment => ['MAILTO=""'],
+    environment => $cron_env_vars,
     command     => '/usr/local/bin/unattended-reboot',
     require     => Package['update-notifier-common'],
   } ->
