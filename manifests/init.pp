@@ -137,6 +137,14 @@ class unattended_reboot (
     }
   }
 
+  file { '/usr/local/bin/unattended-reboot':
+    ensure  => $file_ensure,
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    require => Package['locksmithctl'],
+    content => template('unattended_reboot/unattended-reboot.erb'),
+  } ->
   # Check if a reboot is required and attempt to grab the reboot mutex.
   cron { 'unattended-reboot':
     ensure      => $cron_ensure,
@@ -149,14 +157,6 @@ class unattended_reboot (
     environment => $cron_env_vars,
     command     => '/usr/local/bin/unattended-reboot',
     require     => Package['update-notifier-common'],
-  } ->
-  file { '/usr/local/bin/unattended-reboot':
-    ensure  => $file_ensure,
-    mode    => '0755',
-    owner   => 'root',
-    group   => 'root',
-    require => Package['locksmithctl'],
-    content => template('unattended_reboot/unattended-reboot.erb'),
   }
 
   # Run unattended upgrade to maximise the chance that an upgraded package is
