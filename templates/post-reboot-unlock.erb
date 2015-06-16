@@ -11,5 +11,5 @@ console log
 normal exit 0 1
 
 script
-  exec locksmithctl -endpoint='<%= @etcd_endpoints.join(',') %>' unlock '<%= @fqdn %>' 2>&1 | logger -s -t post-reboot-unlock
+  exec /usr/bin/locksmithctl -endpoint='<%= @etcd_endpoints.join(',') %>' unlock '<%= @fqdn %>' 2>&1 | /usr/bin/logger -s -t post-reboot-unlock
 end script

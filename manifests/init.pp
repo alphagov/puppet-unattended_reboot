@@ -11,6 +11,10 @@
 #
 #   Default: ''
 #
+# [*cron_env_vars*]
+#   An array of environment variables to apply to the created cronjobs.
+#   Default: []
+#
 # [*cron_month*]
 #   Month of year at which to run unatteded-reboot command.
 #   Default: '*'
@@ -68,6 +72,7 @@
 #
 class unattended_reboot (
   $check_scripts_directory = '',
+  $cron_env_vars = [],
   $cron_month = '*',
   $cron_monthday = '*',
   $cron_weekday = '*',
@@ -87,6 +92,7 @@ class unattended_reboot (
     validate_absolute_path($pre_reboot_scripts_directory)
   }
 
+  validate_array($cron_env_vars)
   validate_array($etcd_endpoints)
   validate_bool($enabled)
   validate_bool($manage_package)
@@ -131,6 +137,14 @@ class unattended_reboot (
     }
   }
 
+  file { '/usr/local/bin/unattended-reboot':
+    ensure  => $file_ensure,
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    require => Package['locksmithctl'],
+    content => template('unattended_reboot/unattended-reboot.erb'),
+  } ->
   # Check if a reboot is required and attempt to grab the reboot mutex.
   cron { 'unattended-reboot':
     ensure      => $cron_ensure,
@@ -140,31 +154,24 @@ class unattended_reboot (
     hour        => $cron_hour,
     minute      => $cron_minute,
     user        => 'root',
-    environment => ['MAILTO=""'],
+    environment => $cron_env_vars,
     command     => '/usr/local/bin/unattended-reboot',
     require     => Package['update-notifier-common'],
-  } ->
-  file { '/usr/local/bin/unattended-reboot':
-    ensure  => $file_ensure,
-    mode    => '0755',
-    owner   => 'root',
-    group   => 'root',
-    require => Package['locksmithctl'],
-    content => template('unattended_reboot/unattended-reboot.erb'),
   }
 
   # Run unattended upgrade to maximise the chance that an upgraded package is
   # installed within the reboot window
   cron { 'unattended-upgrade':
-    ensure   => $unattended_upgrade_cron_ensure,
-    month    => $cron_month,
-    monthday => $cron_monthday,
-    weekday  => $cron_weekday,
-    hour     => $cron_hour,
-    minute   => fqdn_rand(59),
-    user     => 'root',
-    command  => '/usr/bin/unattended-upgrade',
-    require  => Package['unattended-upgrades'],
+    ensure      => $unattended_upgrade_cron_ensure,
+    month       => $cron_month,
+    monthday    => $cron_monthday,
+    weekday     => $cron_weekday,
+    hour        => $cron_hour,
+    minute      => fqdn_rand(59),
+    user        => 'root',
+    environment => $cron_env_vars,
+    command     => '/usr/bin/unattended-upgrade',
+    require     => Package['unattended-upgrades'],
   }
 
 }
