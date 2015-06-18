@@ -1,5 +1,5 @@
 {
-  "name": "puppet-unattended_reboot",
+  "name": "gdsoperations-unattended_reboot",
   "version": "0.1.0",
   "author": "Government Digital Service",
   "summary": "Coordinates unattended reboots of Ubuntu servers",
