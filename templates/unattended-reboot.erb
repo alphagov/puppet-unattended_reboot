@@ -15,7 +15,7 @@ if ! [ -f /var/run/reboot-required ]; then
 fi
 
 <% unless @check_scripts_directory == '' -%>
-/bin/run-parts --exit-on-error <%= @check_scripts_directory %>
+/bin/run-parts --regex '.*' --exit-on-error <%= @check_scripts_directory %>
 
 if [ $? -ne 0 ]; then
   echo 'One of the check scripts returned a non-zero exit code' >&2
@@ -31,7 +31,7 @@ if [ $? -ne 0 ]; then
 fi
 
 <% unless @pre_reboot_scripts_directory == '' -%>
-/bin/run-parts --exit-on-error <%= @pre_reboot_scripts_directory %>
+/bin/run-parts --regex '.*' --exit-on-error <%= @pre_reboot_scripts_directory %>
 
 if [ $? -ne 0 ]; then
   echo 'One of the pre-reboot scripts returned a non-zero exit code' >&2
