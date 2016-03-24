@@ -75,12 +75,12 @@ describe 'unattended_reboot', :type => :class do
         :check_scripts_directory => '/path',
       })}
 
-      it { should contain_file('/usr/local/bin/unattended-reboot').with_content(/^\/bin\/run-parts --exit-on-error \/path$/) }
+      it { should contain_file('/usr/local/bin/unattended-reboot').with_content(/^\/bin\/run-parts --regex '.*' --exit-on-error \/path$/) }
     end
 
     context "check_scripts_directory not set" do
       it { should_not raise_error }
-      it { should contain_file('/usr/local/bin/unattended-reboot').without_content(/^\/bin\/run-parts --exit-on-error\s*$/) }
+      it { should contain_file('/usr/local/bin/unattended-reboot').without_content(/^\/bin\/run-parts --regex '.*' --exit-on-error\s*$/) }
     end
 
     context "check_scripts_directory set to non-absolute path" do
@@ -96,12 +96,12 @@ describe 'unattended_reboot', :type => :class do
         :pre_reboot_scripts_directory => '/path',
       })}
 
-      it { should contain_file('/usr/local/bin/unattended-reboot').with_content(/^\/bin\/run-parts --exit-on-error \/path$/) }
+      it { should contain_file('/usr/local/bin/unattended-reboot').with_content(/^\/bin\/run-parts --regex '.*' --exit-on-error \/path$/) }
     end
 
     context "pre_reboot_scripts_directory not set" do
       it { should_not raise_error }
-      it { should contain_file('/usr/local/bin/unattended-reboot').without_content(/^\/bin\/run-parts --exit-on-error\s*$/) }
+      it { should contain_file('/usr/local/bin/unattended-reboot').without_content(/^\/bin\/run-parts --regex '.*' --exit-on-error\s*$/) }
     end
 
     context "pre_reboot_scripts_directory set to non-absolute path" do
