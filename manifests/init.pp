@@ -100,7 +100,6 @@ class unattended_reboot (
 
   if ($enabled) {
     $cron_ensure = present
-    $directory_ensure = directory
     $file_ensure = present
     $pkg_ensure = latest
 
@@ -115,7 +114,6 @@ class unattended_reboot (
     }
   } else {
     $cron_ensure = absent
-    $directory_ensure = absent
     $file_ensure = absent
     $pkg_ensure  = purged
     $unattended_upgrade_cron_ensure = absent
