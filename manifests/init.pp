@@ -100,7 +100,6 @@ class unattended_reboot (
 
   if ($enabled) {
     $cron_ensure = present
-    $directory_ensure = directory
     $file_ensure = present
     $pkg_ensure = latest
 
@@ -115,7 +114,6 @@ class unattended_reboot (
     }
   } else {
     $cron_ensure = absent
-    $directory_ensure = absent
     $file_ensure = absent
     $pkg_ensure  = purged
     $unattended_upgrade_cron_ensure = absent
@@ -146,32 +144,29 @@ class unattended_reboot (
     content => template('unattended_reboot/unattended-reboot.erb'),
   } ->
   # Check if a reboot is required and attempt to grab the reboot mutex.
-  cron { 'unattended-reboot':
+  unattended_reboot::root_crontab { 'unattended-reboot':
     ensure      => $cron_ensure,
     month       => $cron_month,
     monthday    => $cron_monthday,
     weekday     => $cron_weekday,
     hour        => $cron_hour,
     minute      => $cron_minute,
-    user        => 'root',
+    require     => Package['update-notifier-common'],
     environment => $cron_env_vars,
     command     => '/usr/local/bin/unattended-reboot',
-    require     => Package['update-notifier-common'],
   }
 
   # Run unattended upgrade to maximise the chance that an upgraded package is
   # installed within the reboot window
-  cron { 'unattended-upgrade':
+  unattended_reboot::root_crontab { 'unattended-upgrade':
     ensure      => $unattended_upgrade_cron_ensure,
     month       => $cron_month,
     monthday    => $cron_monthday,
     weekday     => $cron_weekday,
     hour        => $cron_hour,
     minute      => fqdn_rand(59),
-    user        => 'root',
+    require     => Package['unattended-upgrades'],
     environment => $cron_env_vars,
     command     => '/usr/bin/unattended-upgrade',
-    require     => Package['unattended-upgrades'],
   }
-
 }

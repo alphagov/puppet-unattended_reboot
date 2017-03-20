@@ -16,7 +16,7 @@ describe 'unattended_reboot', :type => :class do
     it { should contain_file('/etc/init/post-reboot-unlock.conf').with_ensure('present') }
     it { should contain_file('/usr/local/bin/unattended-reboot').with_ensure('present') }
 
-    it { should contain_cron('unattended-reboot').with_ensure('present') }
+    it { should contain_unattended_reboot__root_crontab('unattended-reboot').with_ensure('present') }
 
     it "passes all endpoints to locksmithctl" do
       should contain_file('/usr/local/bin/unattended-reboot').with_content(/locksmithctl -endpoint='http:\/\/etcd-1\.foo:4001,http:\/\/etcd-2\.foo:4001' lock/)
@@ -51,7 +51,7 @@ describe 'unattended_reboot', :type => :class do
         :run_unattended_upgrade => true,
       })}
 
-      it { should contain_cron('unattended-upgrade').with_ensure('present') }
+      it { should contain_unattended_reboot__root_crontab('unattended-upgrade').with_ensure('present') }
     end
 
     context "run_unattended_upgrade is false" do
@@ -59,7 +59,7 @@ describe 'unattended_reboot', :type => :class do
         :run_unattended_upgrade => false,
       })}
 
-      it { should contain_cron('unattended-upgrade').with_ensure('absent') }
+      it { should contain_unattended_reboot__root_crontab('unattended-upgrade').with_ensure('absent') }
     end
 
     context "empty array passed to etcd_endpoints" do
@@ -121,8 +121,8 @@ describe 'unattended_reboot', :type => :class do
     it { should contain_file('/etc/init/post-reboot-unlock.conf').with_ensure('absent') }
     it { should contain_file('/usr/local/bin/unattended-reboot').with_ensure('absent') }
 
-    it { should contain_cron('unattended-reboot').with_ensure('absent') }
-    it { should contain_cron('unattended-upgrade').with_ensure('absent') }
+    it { should contain_unattended_reboot__root_crontab('unattended-reboot').with_ensure('absent') }
+    it { should contain_unattended_reboot__root_crontab('unattended-upgrade').with_ensure('absent') }
 
     context "disabled and empty array passed to etcd_endpoints" do
       let(:params) {{
