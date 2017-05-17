@@ -1,3 +1,8 @@
+## 0.3.0 (2017-05-17)
+
+  - Feature: use cron.d for cronjobs rather than default crontab. This allows
+  us to set specific MAILTO parameters to the cron without affecting other jobs
+
 ## 0.2.0 (2016-02-25)
  
   - Bug fix: Ensure run-parts will execute scripts with file extensions
