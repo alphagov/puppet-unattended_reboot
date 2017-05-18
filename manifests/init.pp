@@ -142,9 +142,8 @@ class unattended_reboot (
     group   => 'root',
     require => Package['locksmithctl'],
     content => template('unattended_reboot/unattended-reboot.erb'),
-  } ->
   # Check if a reboot is required and attempt to grab the reboot mutex.
-  unattended_reboot::root_crontab { 'unattended-reboot':
+  } -> unattended_reboot::root_crontab { 'unattended-reboot':
     ensure      => $cron_ensure,
     month       => $cron_month,
     monthday    => $cron_monthday,
