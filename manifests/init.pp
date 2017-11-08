@@ -102,6 +102,7 @@ class unattended_reboot (
     $cron_ensure = present
     $file_ensure = present
     $pkg_ensure = latest
+    $supporting_packages = present
 
     if $run_unattended_upgrade {
       $unattended_upgrade_cron_ensure = present
@@ -117,7 +118,10 @@ class unattended_reboot (
     $file_ensure = absent
     $pkg_ensure  = purged
     $unattended_upgrade_cron_ensure = absent
+    $supporting_packages = absent
   }
+
+  ensure_packages(['update-notifier-common', 'unattended-upgrades'], { ensure => $supporting_packages })
 
   # Upstart script to release reboot lock on boot
   file { '/etc/init/post-reboot-unlock.conf':
