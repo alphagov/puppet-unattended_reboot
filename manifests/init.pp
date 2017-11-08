@@ -137,6 +137,10 @@ class unattended_reboot (
       ensure => $pkg_ensure,
       before => File['/etc/init/post-reboot-unlock.conf'],
     }
+
+    File['/usr/local/bin/unattended-reboot'] {
+      require => Package['locksmithctl'],
+    }
   }
 
   file { '/usr/local/bin/unattended-reboot':
@@ -144,7 +148,6 @@ class unattended_reboot (
     mode    => '0755',
     owner   => 'root',
     group   => 'root',
-    require => Package['locksmithctl'],
     content => template('unattended_reboot/unattended-reboot.erb'),
   # Check if a reboot is required and attempt to grab the reboot mutex.
   } -> unattended_reboot::root_crontab { 'unattended-reboot':
