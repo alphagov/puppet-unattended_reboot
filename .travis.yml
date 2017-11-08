@@ -1,18 +1,15 @@
 ---
 language: ruby
-bundler_args: --without development system_tests
 before_install: rm Gemfile.lock || true
-rvm:
-  - 1.9.3
-  - 2.1.0
+bundler_args: --without functional_tests
 script: bundle exec rake test
-env:
-  - PUPPET_VERSION="~> 3.8.0"
-  - PUPPET_VERSION="~> 3.8.0" STRICT_VARIABLES=yes
-  - PUPPET_VERSION="~> 3.8.0" STRICT_VARIABLES=yes FUTURE_PARSER=yes
-  - PUPPET_VERSION="~> 4.9.0"
 matrix:
+  fast_finish: true
+  include:
+    - rvm: 1.9.3
+      env: PUPPET_VERSION="~> 3.8.0"
+    - rvm: 2.4.0
+      env: PUPPET_VERSION="~> 5.3.0"
   allow_failures:
-    - env: PUPPET_VERSION="~> 4.9.0"
-      rvm: 1.9.3
-
+    - rvm: 2.4.0
+      env: PUPPET_VERSION="~> 5.3.0"
