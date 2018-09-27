@@ -21,15 +21,15 @@ occurs, e.g. remove the node from a load balancer pool, by setting the
 
 ## Requirements
 
-Needs [etcd][] for the mutual exclusion lock.You can find the source for our
+Needs [etcd][] for the mutual exclusion lock.You can see how we build our
 `etcd` Ubuntu package in our
-[alphagov/packager](https://github.com/alphagov/packager/tree/master/pkg/etcd)
+[alphagov/packager](https://github.com/alphagov/packager/tree/master/fpm/recipes/etcd)
 repository.
 
 
-Uses [locksmithctl][] to add/remove the lock. You can find the source for our
+Uses [locksmithctl][] to add/remove the lock. You can see how we build our
 `locksmithctl` Ubuntu package in our
-[alphagov/packager](https://github.com/alphagov/packager/tree/master/pkg/locksmithctl)
+[alphagov/packager](https://github.com/alphagov/packager/tree/master/fpm/recipes/locksmithctl)
 repository.
 
 [etcd]: https://coreos.com/docs/cluster-management/setup/cluster-architectures/
