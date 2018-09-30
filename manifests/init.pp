@@ -39,6 +39,11 @@
 #   Whether to enable unattended reboots.
 #   Default: false
 #
+# [*cron_enabled*]
+#   Whether to enable the unattended reboot cronjob, if `enabled` is
+#   true.
+#   Default: true
+#
 # [*etcd_endpoints*]
 #   An array of etcd client endpoints.
 #
@@ -99,7 +104,11 @@ class unattended_reboot (
   validate_bool($run_unattended_upgrade)
 
   if ($enabled) {
-    $cron_ensure = present
+    if $cron_enabled {
+      $cron_ensure = present
+    } else {
+      $cron_ensure = absent
+    }
     $file_ensure = present
     $pkg_ensure = latest
     $supporting_packages = present
