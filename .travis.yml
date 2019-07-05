@@ -6,8 +6,6 @@ script: bundle exec rake test
 matrix:
   fast_finish: true
   include:
-    - rvm: 1.9.3
-      env: PUPPET_VERSION="~> 3.8.0"
     - rvm: 2.4.0
       env: PUPPET_VERSION="~> 5.3.0"
   allow_failures:
